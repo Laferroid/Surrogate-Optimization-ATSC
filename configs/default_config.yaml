@@ -7,20 +7,26 @@ num_channels: 16
 hidden_size: 8
 train_predict_mode: 'direct'
 
-data_dir: "../data/training_data/standard-1.0/"
-base_dir: "../results/"
+data_name: 'standard-1.0'
+data_dir: "../data/"
+result_dir: "../results/"
 exp_group: "test"
-exp_id: "baseline"
+exp_name: "baseline"
 # group_dir: "../results/test/"
-# id_dir: "../results/test/baseline/"
+# model_dir: "../results/test/baseline/"
 
+device: 'cpu'
+
+# about training
 seed: 0
 sample_size: [8,4]
 num_workers: 2
 split: [0.6,0.2,0.2]
 lr: 0.001
+epochs: 8
 
 # about simulation
+run_num: 1
 cycle_to_run: 10
 time_to_run: 3600
 step_length: 1.0
@@ -28,8 +34,15 @@ time_interval: 1.0
 step_num: 1
 warm_up: 400
 
+# about experiment
+snapshot_points: [24,32,48,60,72]
+
+# about sampling
 grid_length: 2.0
-osb_range: 200.0
+obs_range: 200.0
+lane_num: 4
+approach_num: 4
+congestion_threshold: 200.0
 
 # about mpc
 num_enumerations: 1

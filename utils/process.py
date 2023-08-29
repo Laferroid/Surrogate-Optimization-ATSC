@@ -1,6 +1,7 @@
 #%%
 # region import 
-import sys,os
+import sys
+import os
 import numpy as np
 import torch
 from tqdm import tqdm
@@ -29,7 +30,7 @@ GRID_NUM = sim_config['grid_num']
 def agg_sim_data(data_dir,output_dir):
     agg_freq = 16  # 至多多少个仿真的文件同时进行处理
     data = {'obs':[],'timeloss':[],'tc':[]}
-    pbar = tqdm(total=len(os.listdir(data_dir)),desc=f"loading ")
+    pbar = tqdm(total=len(os.listdir(data_dir)),desc="loading")
     chunk_index = 0
     sample2chunk = []
     for _,file in enumerate(os.listdir(data_dir)):

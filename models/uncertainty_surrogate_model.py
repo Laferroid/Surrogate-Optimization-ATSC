@@ -48,7 +48,8 @@ class UncertaintySurrogateModel(nn.Module):
 
         # lower encoder
         # sequential的模型只接受单输入,因此LSTM需单独写出
-        self.l_enc_layer = nn.LSTM(input_size=hidden_size,hidden_size=hidden_size,num_layers=l_enc_num_layers,dropout=0.0,bidirectional=bool(self.D-1))
+        self.l_enc_layer = nn.LSTM(input_size=hidden_size,hidden_size=hidden_size,
+                                   num_layers=l_enc_num_layers,dropout=0.0,bidirectional=bool(self.D-1))
         self.l_enc_output_layer = LinearResBlock(self.D*hidden_size,hidden_size,hidden_size)
         
         # size: phase=5 + split=8 + target_func=3*8

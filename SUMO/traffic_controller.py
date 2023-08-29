@@ -278,9 +278,9 @@ class BaseTrafficController():
     
     def generate_mpc(self,vph_m,mpc_controller):
         control,is_valid =  mpc_controller.generate_control(vph_m)
-        if is_valid == True:
+        if is_valid:
             return control
-        elif is_valid == False:
+        else:
             return self.generate_adaptive_nema(vph_m)
 
     def generate_fixed_time(self,param):

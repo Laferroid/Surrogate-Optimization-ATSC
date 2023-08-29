@@ -85,7 +85,7 @@ def check(model,epoch,step,loss):
         os.mkdir(model_dir+'checkpoints/')
     torch.save(checkpoint,model_dir+'checkpoints/'+'checkpoint-%s.pth' % (str(step)))
 
-def train(model,epochs,train_dl,val_dl,config):
+def train(model,train_dl,val_dl,config):
     model.train()
     model_dir = model.model_dir
     # 断点续训：寻找并导入checkpoint，正在处理的epoch和step，以及对应loss
@@ -100,8 +100,8 @@ def train(model,epochs,train_dl,val_dl,config):
     writer_step = SummaryWriter(log_dir=model_dir+'tb-step-logs',purge_step=global_step)
     # writer_epoch = SummaryWriter(log_dir=model_dir+'tb-epoch-logs',purge_step=global_epoch)
     
-    wandb.init(project='surrogate-model',job_type='test',group=config['model_name'],id='666',
-               config=config,save_code=True,resume='allow')
+    wandb.init(project='surrogate-model',job_type='preparation',group=config['exp_group'],name=config['exp_name'],
+               config=config,save_code=False,resume='allow')
     # artifact = wandb.Artifact(name='train_script',type='code')
     # artifact.add_file('/models/model_utils.py')
     wandb.watch(models=model,log='all',log_freq=200,log_graph=True)
@@ -122,7 +122,7 @@ def train(model,epochs,train_dl,val_dl,config):
     
     # train loop
     loss_sum = global_loss
-    for _ in range(epochs):
+    for _ in range(config['epochs']):
         pbar = tqdm(total=len(train_dl),desc=f"training epoch {global_epoch}")
         # train
         for _,(x,y) in enumerate(train_dl):

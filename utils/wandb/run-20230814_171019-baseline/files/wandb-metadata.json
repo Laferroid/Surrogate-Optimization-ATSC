@@ -1,0 +1,50 @@
+{
+    "os": "Windows-10-10.0.22621-SP0",
+    "python": "3.10.12",
+    "heartbeatAt": "2023-08-14T09:10:22.064128",
+    "startedAt": "2023-08-14T09:10:19.772666",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "d:\\FJL\\project\\utils\\train.py",
+    "codePath": "utils\\train.py",
+    "git": {
+        "remote": "https://github.com/feng-jialong/Surrogate-Opimization-ASTC.git",
+        "commit": "24fcbe665a2e5dd575b3f1088d5654609ef5d63b"
+    },
+    "email": "jexxllz@tongji.edu.cn",
+    "root": "D:/FJL/project",
+    "host": "INTO",
+    "username": "t_t",
+    "executable": "d:\\anaconda\\envs\\fjl\\python.exe",
+    "cpu_count": 10,
+    "cpu_count_logical": 16,
+    "cpu_freq": {
+        "current": 3700.0,
+        "min": 0.0,
+        "max": 3700.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3700.0,
+            "min": 0.0,
+            "max": 3700.0
+        }
+    ],
+    "disk": {
+        "total": 177.05956649780273,
+        "used": 131.91937255859375
+    },
+    "gpu": "NVIDIA GeForce RTX 3060",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 3060",
+            "memory_total": 12884901888
+        }
+    ],
+    "memory": {
+        "total": 15.726570129394531
+    }
+}
