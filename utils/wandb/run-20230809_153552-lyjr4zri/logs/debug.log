@@ -1,0 +1,31 @@
+2023-08-09 15:35:52,803 INFO    MainThread:16204 [wandb_setup.py:_flush():76] Current SDK version is 0.15.8
+2023-08-09 15:35:52,803 INFO    MainThread:16204 [wandb_setup.py:_flush():76] Configure stats pid to 16204
+2023-08-09 15:35:52,804 INFO    MainThread:16204 [wandb_setup.py:_flush():76] Loading settings from C:\Users\15157\.config\wandb\settings
+2023-08-09 15:35:52,804 INFO    MainThread:16204 [wandb_setup.py:_flush():76] Loading settings from d:\FJL\project\utils\wandb\settings
+2023-08-09 15:35:52,804 INFO    MainThread:16204 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2023-08-09 15:35:52,804 INFO    MainThread:16204 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2023-08-09 15:35:52,804 INFO    MainThread:16204 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'train.py', 'program': 'd:\\FJL\\project\\utils\\train.py'}
+2023-08-09 15:35:52,804 INFO    MainThread:16204 [wandb_init.py:_log_setup():507] Logging user logs to d:\FJL\project\utils\wandb\run-20230809_153552-lyjr4zri\logs\debug.log
+2023-08-09 15:35:52,804 INFO    MainThread:16204 [wandb_init.py:_log_setup():508] Logging internal logs to d:\FJL\project\utils\wandb\run-20230809_153552-lyjr4zri\logs\debug-internal.log
+2023-08-09 15:35:52,805 INFO    MainThread:16204 [wandb_init.py:_jupyter_setup():453] configuring jupyter hooks <wandb.sdk.wandb_init._WandbInit object at 0x0000025D79526890>
+2023-08-09 15:35:52,805 INFO    MainThread:16204 [wandb_init.py:init():547] calling init triggers
+2023-08-09 15:35:52,805 INFO    MainThread:16204 [wandb_init.py:init():554] wandb.init called with sweep_config: {}
+config: {'exp_name': 'gamma-1.0', 'data_dir': '../data/training_data/standard-1.0/', 'batch_size': 32, 'lookback': 8, 'lookahead': 4, 'gamma': 1.0, 'num_components': 16, 'num_channels': 16, 'hidden_size': 8, 'train_predict_mode': 'direct', 'base_dir': '../results/', 'seed': 0, 'sample_size': [8, 4], 'num_workers': 2, 'split': [0.6, 0.2, 0.2], 'lr': 0.001, 'model_name': 'baseline', 'model_dir': '../results/gamma-1.0/baseline/', 'device': device(type='cuda', index=0)}
+2023-08-09 15:35:52,805 INFO    MainThread:16204 [wandb_init.py:init():596] starting backend
+2023-08-09 15:35:52,805 INFO    MainThread:16204 [wandb_init.py:init():600] setting up manager
+2023-08-09 15:35:52,808 INFO    MainThread:16204 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=spawn, using: spawn
+2023-08-09 15:35:52,811 INFO    MainThread:16204 [wandb_init.py:init():606] backend started and connected
+2023-08-09 15:35:52,820 INFO    MainThread:16204 [wandb_run.py:_label_probe_notebook():1234] probe notebook
+2023-08-09 15:35:52,822 INFO    MainThread:16204 [wandb_run.py:_label_probe_notebook():1244] Unable to probe notebook: 'NoneType' object has no attribute 'get'
+2023-08-09 15:35:52,822 INFO    MainThread:16204 [wandb_init.py:init():697] updated telemetry
+2023-08-09 15:35:52,824 INFO    MainThread:16204 [wandb_init.py:init():730] communicating run to backend with 60.0 second timeout
+2023-08-09 15:35:53,838 INFO    MainThread:16204 [wandb_run.py:_on_init():2180] communicating current version
+2023-08-09 15:35:57,216 INFO    MainThread:16204 [wandb_run.py:_on_init():2189] got version response 
+2023-08-09 15:35:57,216 INFO    MainThread:16204 [wandb_init.py:init():781] starting run threads in backend
+2023-08-09 15:36:00,526 INFO    MainThread:16204 [wandb_run.py:_console_start():2159] atexit reg
+2023-08-09 15:36:00,526 INFO    MainThread:16204 [wandb_run.py:_redirect():2014] redirect: wrap_raw
+2023-08-09 15:36:00,527 INFO    MainThread:16204 [wandb_run.py:_redirect():2079] Wrapping output streams.
+2023-08-09 15:36:00,527 INFO    MainThread:16204 [wandb_run.py:_redirect():2104] Redirects installed.
+2023-08-09 15:36:00,527 INFO    MainThread:16204 [wandb_init.py:init():822] run started, returning control to user process
+2023-08-09 15:36:01,826 INFO    MainThread:16204 [jupyter.py:_save_ipynb():384] looking for notebook: None
+2023-08-09 15:36:01,827 INFO    MainThread:16204 [wandb_init.py:_pause_backend():418] pausing backend

@@ -1,0 +1,87 @@
+wandb_version: 1
+
+exp_name:
+  desc: null
+  value: gamma-1.0
+data_dir:
+  desc: null
+  value: ../data/training_data/standard-1.0/
+batch_size:
+  desc: null
+  value: 32
+lookback:
+  desc: null
+  value: 8
+lookahead:
+  desc: null
+  value: 4
+gamma:
+  desc: null
+  value: 1.0
+num_components:
+  desc: null
+  value: 16
+train_predict_mode:
+  desc: null
+  value: direct
+base_dir:
+  desc: null
+  value: ../results/
+seed:
+  desc: null
+  value: 0
+sample_size:
+  desc: null
+  value:
+  - 8
+  - 4
+num_workers:
+  desc: null
+  value: 2
+split:
+  desc: null
+  value:
+  - 0.6
+  - 0.2
+  - 0.2
+pass:
+  desc: null
+  value: pass
+model_name:
+  desc: null
+  value: 2023-08-06_23-31-05
+model_dir:
+  desc: null
+  value: ../results/gamma-1.0/2023-08-06_23-31-05/
+device:
+  desc: null
+  value: cuda:0
+_wandb:
+  desc: null
+  value:
+    python_version: 3.10.12
+    cli_version: 0.15.8
+    framework: torch
+    is_jupyter_run: true
+    is_kaggle_kernel: false
+    start_time: 1691335871.51967
+    t:
+      1:
+      - 1
+      - 53
+      - 55
+      2:
+      - 1
+      - 53
+      - 55
+      3:
+      - 1
+      - 2
+      - 16
+      - 23
+      4: 3.10.12
+      5: 0.15.8
+      8:
+      - 1
+      - 3
+      - 5

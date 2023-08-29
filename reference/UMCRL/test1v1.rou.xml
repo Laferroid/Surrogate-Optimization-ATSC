@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2021-07-15 22:50:12 by Eclipse SUMO netedit Version 1.9.1
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+    <processing>
+        <geometry.min-radius.fix.railways value="false"/>
+        <geometry.max-grade.fix value="false"/>
+        <offset.disable-normalization value="true"/>
+        <lefthand value="false"/>
+    </processing>
+    <junctions>
+        <no-internal-links value="true"/>
+        <no-turnarounds value="true"/>
+        <junctions.corner-detail value="5"/>
+        <junctions.limit-turn-speed value="5.5"/>
+        <rectangular-lane-cut value="false"/>
+    </junctions>
+    <pedestrian>
+        <walkingareas value="false"/>
+    </pedestrian>
+    <report>
+        <aggregate-warnings value="5"/>
+    </report>
+</configuration>
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vType id="H30" length="4.50" minGap="2.00" maxSpeed="8.33" emissionClass="HBEFA3/PC_G_EU4" guiShape="passenger/hatchback" width="2.00" height="1.50" color="77,255,54" carFollowModel="IDM" accel="2" decel="3"/>
+    <vType id="H40" length="4.50" minGap="2.00" maxSpeed="11.11" guiShape="passenger/hatchback" width="2.00" color="255,161,0" carFollowModel="IDM" accel="2" decel="3"/>
+    <vType id="S30" length="5.00" minGap="2.00" maxSpeed="8.33" emissionClass="HBEFA3/PC_G_EU4" guiShape="passenger" width="2.00" height="1.50" color="77,255,54" carFollowModel="IDM" accel="2" decel="3"/>
+    <vType id="S40" length="5.00" minGap="2.00" maxSpeed="11.11" guiShape="passenger" width="2.00" color="255,161,0" carFollowModel="IDM" accel="2" decel="3"/>
+    <vType id="V30" length="6.00" minGap="2.00" maxSpeed="8.33" emissionClass="HBEFA3/PC_G_EU4" guiShape="passenger/van" width="2.20" height="1.50" color="77,255,54" carFollowModel="IDM" accel="2" decel="3"/>
+    <vType id="V40" length="6.00" minGap="2.00" maxSpeed="11.11" guiShape="passenger/van" width="2.20" color="255,161,0" carFollowModel="IDM" accel="2" decel="3"/>
+    <vType id="person1" length="0.74" minGap="0.00" maxSpeed="1.58" guiShape="pedestrian" width="0.40" height="1.70" lcTimeToImpatience="9999" carFollowModel="IDM" tau="0.1"/>
+    <flow id="person_1" type="person1" begin="0.00" departLane="0" arrivalLane="0" end="7200.00" probability="0.06">
+        <route edges="gneE3" color="cyan"/>
+    </flow>
+    <flow id="person_2" type="person1" begin="0.00" departLane="1" arrivalLane="1" end="7200.00" probability="0.06">
+        <route edges="gneE3" color="cyan"/>
+    </flow>
+    <flow id="person_3" type="person1" begin="0.00" departLane="2" arrivalLane="2" end="7200.00" probability="0.06">
+        <route edges="gneE3" color="cyan"/>
+    </flow>
+    <flow id="person_4" type="person1" begin="0.00" departLane="0" arrivalLane="0" end="7200.00" probability="0.06">
+        <route edges="gneE0" color="cyan"/>
+    </flow>
+    <flow id="person_5" type="person1" begin="0.00" departLane="1" arrivalLane="1" end="7200.00" probability="0.06">
+        <route edges="gneE0" color="cyan"/>
+    </flow>
+    <flow id="person_6" type="person1" begin="0.00" departLane="2" arrivalLane="2" end="7200.00" probability="0.06">
+        <route edges="gneE0" color="cyan"/>
+    </flow>
+    <flow id="flow_1" type="H40" begin="57.0" departSpeed="max" end="7200.00" number="1">
+        <route edges="gneE1" color="cyan"/>
+    </flow>
+</routes>

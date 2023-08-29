@@ -1,0 +1,16 @@
+<configuration>
+	<input>
+		<net-file value="test.net.xml"/>
+		<route-files value="test.rou.xml,flow.rou.xml"/>
+		<additional-files value="test.e3.xml"/>
+	</input>
+	
+	<time>
+		<begin value="0"/>
+		<end value="600"/>
+		<delay value="100"/>
+		<step-length value="0.5"/>
+	</time>
+	
+	<junction-taz value="true"/>
+</configuration>

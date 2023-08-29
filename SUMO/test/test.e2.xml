@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2023-05-06 22:24:10 by Eclipse SUMO netedit Version 1.14.1
+-->
+
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+    <!-- Detectors -->
+    <e2Detector id="me2_0" lanes="N_IN_0 N_IN_P_0" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+    <e2Detector id="me2_1" lanes="N_IN_1 N_IN_P_1" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+    <e2Detector id="me2_2" lanes="N_IN_2 N_IN_P_2" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+    <e2Detector id="me2_3" lanes="N_IN_3 N_IN_P_3" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+    <e2Detector id="me2_4" lanes="E_IN_0 E_IN_P_0" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+    <e2Detector id="me2_5" lanes="E_IN_1 E_IN_P_1" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+    <e2Detector id="me2_6" lanes="E_IN_2 E_IN_P_2" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+    <e2Detector id="me2_7" lanes="E_IN_3 E_IN_P_3" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+    <e2Detector id="me2_8" lanes="S_IN_0 S_IN_P_0" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+    <e2Detector id="me2_9" lanes="S_IN_1 S_IN_P_1" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+    <e2Detector id="me2_10" lanes="S_IN_2 S_IN_P_2" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+    <e2Detector id="me2_11" lanes="S_IN_3 S_IN_P_3" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+    <e2Detector id="me2_12" lanes="W_IN_0 W_IN_P_0" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+    <e2Detector id="me2_13" lanes="W_IN_1 W_IN_P_1" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+    <e2Detector id="me2_14" lanes="W_IN_2 W_IN_P_2" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+    <e2Detector id="me2_15" lanes="W_IN_3 W_IN_P_3" pos="200.00" endPos="43.00" period="300.00" file="null"/>
+</additional>

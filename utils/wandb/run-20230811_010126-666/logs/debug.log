@@ -1,0 +1,41 @@
+2023-08-11 01:01:26,511 INFO    MainThread:12356 [wandb_setup.py:_flush():76] Current SDK version is 0.15.8
+2023-08-11 01:01:26,511 INFO    MainThread:12356 [wandb_setup.py:_flush():76] Configure stats pid to 12356
+2023-08-11 01:01:26,511 INFO    MainThread:12356 [wandb_setup.py:_flush():76] Loading settings from C:\Users\15157\.config\wandb\settings
+2023-08-11 01:01:26,511 INFO    MainThread:12356 [wandb_setup.py:_flush():76] Loading settings from d:\FJL\project\utils\wandb\settings
+2023-08-11 01:01:26,511 INFO    MainThread:12356 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2023-08-11 01:01:26,511 INFO    MainThread:12356 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2023-08-11 01:01:26,511 INFO    MainThread:12356 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'train.py', 'program': 'd:\\FJL\\project\\utils\\train.py'}
+2023-08-11 01:01:26,511 INFO    MainThread:12356 [wandb_init.py:_log_setup():507] Logging user logs to d:\FJL\project\utils\wandb\run-20230811_010126-666\logs\debug.log
+2023-08-11 01:01:26,511 INFO    MainThread:12356 [wandb_init.py:_log_setup():508] Logging internal logs to d:\FJL\project\utils\wandb\run-20230811_010126-666\logs\debug-internal.log
+2023-08-11 01:01:26,511 INFO    MainThread:12356 [wandb_init.py:_jupyter_setup():453] configuring jupyter hooks <wandb.sdk.wandb_init._WandbInit object at 0x00000200BD966920>
+2023-08-11 01:01:26,512 INFO    MainThread:12356 [wandb_init.py:init():547] calling init triggers
+2023-08-11 01:01:26,512 INFO    MainThread:12356 [wandb_init.py:init():554] wandb.init called with sweep_config: {}
+config: {'exp_name': 'gamma-1.0', 'data_dir': '../data/training_data/standard-1.0/', 'batch_size': 32, 'lookback': 8, 'lookahead': 4, 'gamma': 1.0, 'num_components': 16, 'num_channels': 16, 'hidden_size': 8, 'train_predict_mode': 'direct', 'base_dir': '../results/', 'seed': 0, 'sample_size': [8, 4], 'num_workers': 2, 'split': [0.6, 0.2, 0.2], 'lr': 0.001, 'model_name': 'baseline', 'model_dir': '../results/gamma-1.0/baseline/', 'device': device(type='cuda', index=0)}
+2023-08-11 01:01:26,512 INFO    MainThread:12356 [wandb_init.py:init():596] starting backend
+2023-08-11 01:01:26,512 INFO    MainThread:12356 [wandb_init.py:init():600] setting up manager
+2023-08-11 01:01:26,513 INFO    MainThread:12356 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=spawn, using: spawn
+2023-08-11 01:01:26,520 INFO    MainThread:12356 [wandb_init.py:init():606] backend started and connected
+2023-08-11 01:01:26,538 INFO    MainThread:12356 [wandb_run.py:_label_probe_notebook():1234] probe notebook
+2023-08-11 01:01:26,540 INFO    MainThread:12356 [wandb_run.py:_label_probe_notebook():1244] Unable to probe notebook: 'NoneType' object has no attribute 'get'
+2023-08-11 01:01:26,540 INFO    MainThread:12356 [wandb_init.py:init():697] updated telemetry
+2023-08-11 01:01:26,545 INFO    MainThread:12356 [wandb_init.py:init():730] communicating run to backend with 60.0 second timeout
+2023-08-11 01:01:27,951 INFO    MainThread:12356 [wandb_run.py:_on_init():2180] communicating current version
+2023-08-11 01:01:28,730 INFO    MainThread:12356 [wandb_run.py:_on_init():2189] got version response 
+2023-08-11 01:01:28,730 INFO    MainThread:12356 [wandb_init.py:init():781] starting run threads in backend
+2023-08-11 01:01:32,241 INFO    MainThread:12356 [wandb_run.py:_console_start():2159] atexit reg
+2023-08-11 01:01:32,241 INFO    MainThread:12356 [wandb_run.py:_redirect():2014] redirect: wrap_raw
+2023-08-11 01:01:32,241 INFO    MainThread:12356 [wandb_run.py:_redirect():2079] Wrapping output streams.
+2023-08-11 01:01:32,241 INFO    MainThread:12356 [wandb_run.py:_redirect():2104] Redirects installed.
+2023-08-11 01:01:32,242 INFO    MainThread:12356 [wandb_init.py:init():822] run started, returning control to user process
+2023-08-11 01:01:32,242 INFO    MainThread:12356 [wandb_watch.py:watch():51] Watching
+2023-08-11 01:37:10,009 INFO    MainThread:12356 [wandb_run.py:_finish():1894] finishing run 2658328036/surrogate-model/666
+2023-08-11 01:37:10,078 INFO    MainThread:12356 [jupyter.py:save_history():474] saving 3 cells to _session_history.ipynb
+2023-08-11 01:37:10,078 INFO    MainThread:12356 [wandb_run.py:_config_callback():1282] config_cb ('_wandb', 'session_history') code\_session_history.ipynb None
+2023-08-11 01:37:10,082 INFO    MainThread:12356 [jupyter.py:_save_ipynb():384] looking for notebook: None
+2023-08-11 01:37:10,082 INFO    MainThread:12356 [wandb_init.py:_jupyter_teardown():435] cleaning up jupyter logic
+2023-08-11 01:37:10,082 INFO    MainThread:12356 [wandb_run.py:_atexit_cleanup():2128] got exitcode: 0
+2023-08-11 01:37:10,082 INFO    MainThread:12356 [wandb_run.py:_restore():2111] restore
+2023-08-11 01:37:10,082 INFO    MainThread:12356 [wandb_run.py:_restore():2117] restore done
+2023-08-11 01:37:17,375 INFO    MainThread:12356 [wandb_run.py:_footer_history_summary_info():3481] rendering history
+2023-08-11 01:37:17,389 INFO    MainThread:12356 [wandb_run.py:_footer_history_summary_info():3513] rendering summary
+2023-08-11 01:37:17,396 INFO    MainThread:12356 [wandb_run.py:_footer_sync_info():3440] logging synced files

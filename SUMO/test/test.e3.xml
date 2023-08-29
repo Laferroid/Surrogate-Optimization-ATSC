@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2023-03-30 20:53:30 by Eclipse SUMO netedit Version 1.14.1
+-->
+
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+    <!-- Detectors -->
+    <e3Detector id="e3" pos="0.00,0.00" period="300.00" file="NUL">
+        <detEntry lane="W_IN_3" pos="-200.00"/>
+        <detEntry lane="W_IN_2" pos="-200.00"/>
+        <detEntry lane="W_IN_1" pos="-200.00"/>
+        <detEntry lane="W_IN_0" pos="-200.00"/>
+        <detEntry lane="S_IN_3" pos="-200.00"/>
+        <detEntry lane="S_IN_2" pos="-200.00"/>
+        <detEntry lane="S_IN_1" pos="-200.00"/>
+        <detEntry lane="S_IN_0" pos="-200.00"/>
+        <detEntry lane="E_IN_3" pos="-200.00"/>
+        <detEntry lane="E_IN_2" pos="-200.00"/>
+        <detEntry lane="E_IN_1" pos="-200.00"/>
+        <detEntry lane="E_IN_0" pos="-200.00"/>
+        <detEntry lane="N_IN_3" pos="-200.00"/>
+        <detEntry lane="N_IN_2" pos="-200.00"/>
+        <detEntry lane="N_IN_1" pos="-200.00"/>
+        <detEntry lane="N_IN_0" pos="-200.00"/>
+        <detExit lane="W_OUT_0" pos="10.00"/>
+        <detExit lane="W_OUT_1" pos="10.00"/>
+        <detExit lane="W_OUT_2" pos="10.00"/>
+        <detExit lane="W_OUT_3" pos="10.00"/>
+        <detExit lane="S_OUT_0" pos="10.00"/>
+        <detExit lane="S_OUT_1" pos="10.00"/>
+        <detExit lane="S_OUT_2" pos="10.00"/>
+        <detExit lane="S_OUT_3" pos="10.00"/>
+        <detExit lane="E_OUT_0" pos="10.00"/>
+        <detExit lane="E_OUT_1" pos="10.00"/>
+        <detExit lane="E_OUT_2" pos="10.00"/>
+        <detExit lane="E_OUT_3" pos="10.00"/>
+        <detExit lane="N_OUT_3" pos="10.00"/>
+        <detExit lane="N_OUT_2" pos="10.00"/>
+        <detExit lane="N_OUT_1" pos="10.00"/>
+        <detExit lane="N_OUT_0" pos="10.00"/>
+    </e3Detector>
+</additional>

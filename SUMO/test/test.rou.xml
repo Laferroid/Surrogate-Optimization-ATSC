@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2023-05-07 15:09:47 by Eclipse SUMO netedit Version 1.14.1
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <!-- VTypes -->
+    <vType id="LEFT" color="red" lcOvertakeDeltaSpeedFactor="0.5" speedFactor="normc(1,0.1,0.2,2)"/>
+    <vType id="RIGHT" color="blue" lcOvertakeDeltaSpeedFactor="0.5" speedFactor="normc(1,0.1,0.2,2)"/>
+    <vType id="THROUGH" color="green" lcOvertakeDeltaSpeedFactor="0.5" speedFactor="normc(1,0.1,0.2,2)"/>
+    <!-- Routes -->
+    <route id="EE_N" edges="-E8 E_IN E_IN_P N_OUT"/>
+    <route id="EE_S" edges="-E8 E_IN E_IN_P S_OUT"/>
+    <route id="EE_W" edges="-E8 E_IN E_IN_P W_OUT"/>
+    <route id="EN_N" edges="-E6 E_IN E_IN_P N_OUT"/>
+    <route id="EN_S" edges="-E6 E_IN E_IN_P S_OUT"/>
+    <route id="EN_W" edges="-E6 E_IN E_IN_P W_OUT"/>
+    <route id="ES_N" edges="-E7 E_IN E_IN_P N_OUT"/>
+    <route id="ES_S" edges="-E7 E_IN E_IN_P S_OUT"/>
+    <route id="ES_W" edges="-E7 E_IN E_IN_P W_OUT"/>
+    <route id="NE_E" edges="-E0 N_IN N_IN_P E_OUT"/>
+    <route id="NE_S" edges="-E0 N_IN N_IN_P S_OUT"/>
+    <route id="NE_W" edges="-E0 N_IN N_IN_P W_OUT"/>
+    <route id="NN_E" edges="-E2 N_IN N_IN_P E_OUT"/>
+    <route id="NN_S" edges="-E2 N_IN N_IN_P S_OUT"/>
+    <route id="NN_W" edges="-E2 N_IN N_IN_P W_OUT"/>
+    <route id="NW_E" edges="-E1 N_IN N_IN_P E_OUT"/>
+    <route id="NW_S" edges="-E1 N_IN N_IN_P S_OUT"/>
+    <route id="NW_W" edges="-E1 N_IN N_IN_P W_OUT"/>
+    <route id="SE_E" edges="-E10 S_IN S_IN_P E_OUT"/>
+    <route id="SE_N" edges="-E10 S_IN S_IN_P N_OUT"/>
+    <route id="SE_W" edges="-E10 S_IN S_IN_P W_OUT"/>
+    <route id="SS_E" edges="-E11 S_IN S_IN_P E_OUT"/>
+    <route id="SS_N" edges="-E11 S_IN S_IN_P N_OUT"/>
+    <route id="SS_W" edges="-E11 S_IN S_IN_P W_OUT"/>
+    <route id="SW_E" edges="-E9 S_IN S_IN_P E_OUT"/>
+    <route id="SW_N" edges="-E9 S_IN S_IN_P N_OUT"/>
+    <route id="SW_W" edges="-E9 S_IN S_IN_P W_OUT"/>
+    <route id="WN_E" edges="-E3 W_IN W_IN_P E_OUT"/>
+    <route id="WN_N" edges="-E3 W_IN W_IN_P N_OUT"/>
+    <route id="WN_S" edges="-E3 W_IN W_IN_P S_OUT"/>
+    <route id="WS_E" edges="-E4 W_IN W_IN_P E_OUT"/>
+    <route id="WS_N" edges="-E4 W_IN W_IN_P N_OUT"/>
+    <route id="WS_S" edges="-E4 W_IN W_IN_P S_OUT"/>
+    <route id="WW_E" edges="-E5 W_IN W_IN_P E_OUT"/>
+    <route id="WW_N" edges="-E5 W_IN W_IN_P N_OUT"/>
+    <route id="WW_S" edges="-E5 W_IN W_IN_P S_OUT"/>
+</routes>
