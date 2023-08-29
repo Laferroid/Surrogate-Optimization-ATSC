@@ -2,18 +2,13 @@
 # from xml.dom import minidom
 import numpy as np
 import traci
-import sys
-import os
 import time
-import torch
-from sklearn.preprocessing import OneHotEncoder
 
 # 映射到编号
 inlet_map = {"N": 0, "E": 1, "S": 2, "W": 3}
 direction_map = {"L": 0, "T": 1, "R": 2}
 
 scheme2func = [[2, 2], [2, 1], [2, 0], [1, 0]]
-
 
 # 根据车辆的路径id获取信息
 def get_movement(object_id):

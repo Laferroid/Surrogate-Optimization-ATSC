@@ -11,7 +11,9 @@ data_name: 'standard-1.0'
 data_dir: "../data/"
 result_dir: "../results/"
 exp_group: "test"
+job_type: "preparation"
 exp_name: "baseline"
+exp_id: "0"
 # group_dir: "../results/test/"
 # model_dir: "../results/test/baseline/"
 
@@ -24,8 +26,12 @@ num_workers: 2
 split: [0.6,0.2,0.2]
 lr: 0.001
 epochs: 8
+train_log_freq: 10
+val_log_freq: 50
+step_check_freq: 100
 
 # about simulation
+mode: 'experiment'
 run_num: 1
 cycle_to_run: 10
 time_to_run: 3600
