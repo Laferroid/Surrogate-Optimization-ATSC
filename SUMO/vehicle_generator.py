@@ -3,7 +3,7 @@ from traci import vehicle as vehicle
 import numpy as np
 import pandas as pd
 
-from utils import get_movement
+from SUMO.sim_utils import get_movement
 
 route_list = [
     "EN_S",
@@ -100,7 +100,7 @@ class VehicleGenerator:
             veh_type = "LEFT" if turn == 0 else "THROUGH" if turn == 1 else "RIGHT"
             for i in range(self.schedule[r][self.time % self.duration]):
                 vehicle.add(
-                    vehID=r + "." + str(self.time) + "." + str(i), routeID=r, typeID=veh_type, departLane="best"
+                    vehID=r + "." + str(self.time) + "." + str(i+1), routeID=r, typeID=veh_type, departLane="best"
                 )
 
     def generate_static_demand(self):
@@ -136,7 +136,7 @@ class VehicleGenerator:
     def generate_linear_demand(self):
         # 动态变化的vph: linear
         # 进口道基础vph
-        scale = 1.3
+        scale = 1.0
         if len(self.vph_m_list) > 0:
             prev_vph = self.vph_m_list[-1][-1]
             vph_level_a = prev_vph.sum(-1)

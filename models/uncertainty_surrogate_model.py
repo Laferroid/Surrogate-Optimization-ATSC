@@ -11,9 +11,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn.utils.rnn import pad_sequence, pack_padded_sequence
 
-from .mdn_model import MixtureDensityNetwork, LinearResBlock, ReversibleBatchNorm
-from .mdn_model import mdn_mean
-
+from models.mdn_model import MixtureDensityNetwork, LinearResBlock, ReversibleBatchNorm
+from models.mdn_model import mdn_mean
 # endregion
 
 

@@ -15,6 +15,7 @@ job_type: "preparation"
 exp_name: "baseline"
 exp_id: "0"
 # group_dir: "../results/test/"
+# exp_dir: "../results/test/baseline/"
 # model_dir: "../results/test/baseline/"
 
 device: 'cpu'

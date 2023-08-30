@@ -57,6 +57,7 @@ def update_config(default_config_dir, updated_config):
         os.mkdir(model_dir)
 
     config["group_dir"] = group_dir
+    config['exp_dir'] = model_dir
     config["model_dir"] = model_dir
 
     return config

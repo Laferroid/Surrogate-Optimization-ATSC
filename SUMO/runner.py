@@ -9,12 +9,11 @@ import traci
 from SUMO.traffic_controller import BaseTrafficController
 from SUMO.vehicle_generator import VehicleGenerator
 from SUMO.mpc_controller import MPCController
+from SUMO.sim_utils import try_connect, sumo_configurate
+from SUMO.sim_modules import Monitor, Recorder, Clock, Observer, Snapshooter
 
 from models.uncertainty_surrogate_model import UncertaintySurrogateModel
 from models.model_utils import resume
-
-from SUMO.sim_utils import try_connect, sumo_configurate
-from SUMO.sim_modules import Monitor, Recorder, Clock, Observer, Snapshooter
 # endregion
 
 
@@ -26,7 +25,7 @@ def run_experiment(config):
     sumocfg += ["--seed", "0"]  # 固定SUMO的随机数种子，如期望速度随机性和实际速度随机性
     try_connect(8, sumocfg)
 
-    clock = Clock(config["step_num"], config["warm_up"], config["cycle_to_run"], config["time_to_run"])
+    clock = Clock(config)
     monitor = Monitor()
     observer = Observer(config)
     tc = BaseTrafficController(config["step_length"], config["time_interval"])
@@ -35,7 +34,7 @@ def run_experiment(config):
 
     # 代理模型和mpc控制器
     surrogate_model = UncertaintySurrogateModel(config)
-    resume(surrogate_model)
+    resume(surrogate_model,config['model_dir'])
     mpc_controller = MPCController(surrogate_model, config)
 
     pbar = tqdm(total=config["time_to_run"], desc="Simulation experiment")
@@ -62,11 +61,11 @@ def run_experiment(config):
             # 处理：周期即将切换时
             if tc.is_to_update():
                 if clock.is_warm():  # 开始控制
-                    recorder.update(monitor.output(), tc.control)
+                    recorder.update(monitor.output(), tc.control, clock.time)
                     mpc_controller.update(recorder.obs_list[-1], tc.control)
                 clock.update()
 
-                if clock.cycle_step in snapshooter.snapshot_point:  # snapshot when cycle is terminated
+                if clock.cycle_step in snapshooter.snapshot_points:  # snapshot when cycle is terminated
                     snapshot_dir = snapshooter.snapshot_dir + "snapshot_" + str(clock.cycle_step) + "/"
                     if not os.path.isdir(snapshot_dir):
                         os.mkdir(snapshot_dir)
@@ -107,7 +106,7 @@ def run_sample(index, config):
     sumocfg = sumo_configurate(config)
     try_connect(8, sumocfg)
 
-    clock = Clock(config["step_num"], config["warm_up"], config["cycle_to_run"], config["time_to_run"])
+    clock = Clock(config)
     monitor = Monitor()
     observer = Observer(config)
     tc = BaseTrafficController(config["step_length"], config["time_interval"])
@@ -135,7 +134,7 @@ def run_sample(index, config):
             # 处理：周期即将切换时
             if tc.is_to_update():
                 if clock.is_warm():  # 热启动
-                    recorder.update(monitor, tc)  # 内部调用monitor的output函数
+                    recorder.update(monitor.output(), tc.control, clock.time)
                     clock.update()
                     pbar.update(1)
 

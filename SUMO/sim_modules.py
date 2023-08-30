@@ -15,10 +15,10 @@ from traci import junction
 from traci import constants
 
 # 导入与重载自定义模块
-from traffic_controller import BaseTrafficController
-from vehicle_generator import VehicleGenerator
-from mpc_controller import MPCController
-from utils import get_movement, inlet_map, try_connect
+from SUMO.traffic_controller import BaseTrafficController
+from SUMO.vehicle_generator import VehicleGenerator
+from SUMO.mpc_controller import MPCController
+from SUMO.sim_utils import get_movement, inlet_map
 
 # endregion
 
@@ -130,7 +130,7 @@ class Observer:
     def output(self, mode="full"):
         # 获取并输出当前路况观测
         grid_num = int(self.obs_range // self.grid_length) + 3
-        obs = np.zeros((1 + 1, self.approch_num, grid_num, self.lane_num), dtype=np.float32)
+        obs = np.zeros((1 + 1, self.approach_num, grid_num, self.lane_num), dtype=np.float32)
         obs[1] -= 1.0
         vehicle_info = junction.getContextSubscriptionResults(self.id)
 

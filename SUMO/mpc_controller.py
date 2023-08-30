@@ -10,13 +10,14 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from joblib import Parallel, delayed
-from mdn_model import aleatoric_uncertainty, epistemic_uncertainty, mdn_mean, variance
-from process import frame_process
+
 from scipy.linalg import block_diag
 from scipy.optimize import Bounds, LinearConstraint, minimize
 from scipy.stats import norm
 from torch import nn
-from uncertainty_surrogate_model import UncertaintySurrogateModel
+
+from models.mdn_model import aleatoric_uncertainty, epistemic_uncertainty, mdn_mean, variance
+from utils.process import frame_process
 
 # endregion
 
