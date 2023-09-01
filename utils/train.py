@@ -9,7 +9,7 @@ import yaml
 import argparse
 
 # 工作区内的绝对引用，工作区文件夹路径添加到虚拟环境的环境变量PYTHONPATH中
-from helper_func import parse_config, update_config
+from helper_func import parse_config
 from models.uncertainty_surrogate_model import UncertaintySurrogateModel
 from models.model_utils import train, MyDataset, get_dataloader
 
@@ -22,11 +22,11 @@ if __name__ == "__main__":
     print(device)
     default_config_dir = "../configs/default_config.yaml"
 
-    updated_config = parse_config()
+    updated_config = {}
     updated_config["device"] = device
     updated_config['exp_group'] = 'test'
     updated_config['exp_name'] = 'baseline'
-    config = update_config(default_config_dir, updated_config)
+    config = parse_config(default_config_dir, updated_config)
 
     dataset = MyDataset(config)
     print(len(dataset))

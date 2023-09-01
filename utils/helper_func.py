@@ -27,28 +27,25 @@ def params_count(model):
 
 
 # configuration优先级: cmd>hard code>default
+def parse_config(default_config_dir,updated_config=None):
+    # 1. load default configs
+    with open(default_config_dir, "r+") as f:
+        config = yaml.safe_load(f)
 
+    # 2. update hardcode configs
+    config.update(updated_config)
 
-def parse_config():
-    # 处理命令行参数
+    # 3. cmd arguments
     parser = argparse.ArgumentParser("parse cmd arguments")
     parser.add_argument("--exp_group", help="the name of experiment group", type=str, default="test")
     parser.add_argument("--exp_name", help="the experiment id", type=str, default="baseline")
     parser.add_argument("--epochs", help="training epoch number", type=int, default=8)
     # parse_known_args返回两个元素，第一个为所求的NameSpace，第二个是unknown args的列表
-    args = parser.parse_known_args()[0]
-    return vars(args)
+    args = vars(parser.parse_known_args()[0])
 
+    config.update(args)
 
-def update_config(default_config_dir, updated_config):
-    # 导入默认参数
-    with open(default_config_dir, "r+") as f:
-        config = yaml.safe_load(f)
-
-    # 更新硬编码参数
-    config.update(updated_config)
-
-    # 补充衍生配置
+    # 4. construct derived configs
     group_dir = config["result_dir"] + config["exp_group"] + "/"
     model_dir = group_dir + config["exp_name"] + "/"
     if not os.path.isdir(group_dir):
@@ -57,7 +54,7 @@ def update_config(default_config_dir, updated_config):
         os.mkdir(model_dir)
 
     config["group_dir"] = group_dir
-    config['exp_dir'] = model_dir
+    config["exp_dir"] = model_dir
     config["model_dir"] = model_dir
 
     return config

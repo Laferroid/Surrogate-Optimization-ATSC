@@ -6,14 +6,14 @@ from multiprocessing import Pool
 from functools import partial
 
 # 导入与重载自定义模块
-from utils.helper_func import parse_config, update_config
+from utils.helper_func import parse_config
 from SUMO.runner import run_experiment, run_sample
 
 # %% 多进程仿真，获取数据
 if __name__ == "__main__":
     default_config_dir = "../configs/default_config.yaml"
-    updated_config = parse_config()
-    config = update_config(default_config_dir, updated_config)
+
+    config = parse_config(default_config_dir)
 
     MODE = config['mode']
 
