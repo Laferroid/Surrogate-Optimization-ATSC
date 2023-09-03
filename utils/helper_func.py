@@ -27,7 +27,7 @@ def params_count(model):
 
 
 # configuration优先级: cmd>hard code>default
-def parse_config(default_config_dir,updated_config=None):
+def parse_config(default_config_dir, updated_config=None):
     # 1. load default configs
     with open(default_config_dir, "r+") as f:
         config = yaml.safe_load(f)

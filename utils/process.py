@@ -10,11 +10,12 @@ from joblib import Parallel, delayed
 from sklearn.preprocessing import OneHotEncoder
 
 from utils.helper_func import parse_config
+
 # endregion
 
 
 # %% 仿真数据处理成代理模型的输入
-def agg_sim_data(data_dir, output_dir,config):
+def agg_sim_data(data_dir, output_dir, config):
     agg_freq = 16  # 至多多少个仿真的文件同时进行处理
     data = {"obs": [], "timeloss": [], "tc": []}
     pbar = tqdm(total=len(os.listdir(data_dir)), desc="loading")
@@ -30,7 +31,7 @@ def agg_sim_data(data_dir, output_dir,config):
                 continue
         pbar.update(1)
         # 舍弃周期数过少的仿真序列
-        if len(data_p["obs"]) < config['lookback'] + config['lookahead']:
+        if len(data_p["obs"]) < config["lookback"] + config["lookahead"]:
             print("Simulation too short:", file)
             continue
         data["obs"].append(data_p["obs"])
@@ -38,7 +39,7 @@ def agg_sim_data(data_dir, output_dir,config):
         data["tc"].append(data_p["tc"])
 
         if len(data["obs"]) == agg_freq:  # 流式处理
-            sample_num = pre_sim_data(chunk_index, data, output_dir,config)
+            sample_num = pre_sim_data(chunk_index, data, output_dir, config)
             temp = [sample_num * [chunk_index], list(range(sample_num))]
             temp = list(zip(*temp))
             sample2chunk.extend(temp)
@@ -46,7 +47,7 @@ def agg_sim_data(data_dir, output_dir,config):
             data = {"obs": [], "timeloss": [], "tc": []}
     # 末尾数据
     if len(data["obs"]) != 0:
-        sample_num = pre_sim_data(chunk_index, data, output_dir,config)
+        sample_num = pre_sim_data(chunk_index, data, output_dir, config)
         temp = [sample_num * [chunk_index], list(range(sample_num))]
         temp = list(zip(*temp))
         sample2chunk.extend(temp)
@@ -56,10 +57,10 @@ def agg_sim_data(data_dir, output_dir,config):
 
 
 def pre_sim_data(chunk_index, data, output_dir, config):
-    obs = obs_process(data["obs"],config)
-    timeloss = timeloss_process(data["timeloss"],config)
+    obs = obs_process(data["obs"], config)
+    timeloss = timeloss_process(data["timeloss"], config)
 
-    tc = tc_process(data["tc"],config)
+    tc = tc_process(data["tc"], config)
 
     # 时窗数据样本数
     sample_num = len(obs)
@@ -74,7 +75,7 @@ def pre_sim_data(chunk_index, data, output_dir, config):
     return sample_num
 
 
-def obs_process(obs_data,config):
+def obs_process(obs_data, config):
     # input: (sample:list,cycle:list,frames:array)
     # output: (sample:2d-array,cycle:2d-array,frames:tensor)
     sample_num = len(obs_data)
@@ -91,11 +92,11 @@ def obs_process(obs_data,config):
     for i in range(sample_num):
         obs_sample = obs[i]
         cycle_num = len(obs_sample)
-        for j in range(config['lookback'], cycle_num - config['lookahead'] + 1):
-            o.append(obs_sample[j - config['lookback'] : j])
+        for j in range(config["lookback"], cycle_num - config["lookahead"] + 1):
+            o.append(obs_sample[j - config["lookback"] : j])
     # object array: unequal size in some dims
     o_temp = o
-    o = np.empty((len(o_temp), config['lookback']), dtype=object)
+    o = np.empty((len(o_temp), config["lookback"]), dtype=object)
     # o: (sample,lookback,frames!,*)
     for i, sample in enumerate(o_temp):
         for j, cycle in enumerate(sample):
@@ -104,43 +105,47 @@ def obs_process(obs_data,config):
     return o
 
 
-def par_obs_process(sample,config):
+def par_obs_process(sample, config):
     # input: (cycle:list,frames:array)
     # output: (cycle:list,frames:array)
     # sample = sample[:-1]  # 去除末尾空位
     obs_i = []
-    one_hot = OneHotEncoder(categories=(4 * config['grid_num'] * config['lane_num']) * [[-1.0, 0.0, 1.0, 2.0]], sparse_output=False)
+    one_hot = OneHotEncoder(
+        categories=(4 * config["grid_num"] * config["lane_num"]) * [[-1.0, 0.0, 1.0, 2.0]], sparse_output=False
+    )
     for _, cycle in enumerate(sample):
-        obs_c = frame_process(cycle,one_hot)
+        obs_c = frame_process(cycle, one_hot)
         # 观测数据tensor的二维列表
         obs_i.append(obs_c)
 
     return obs_i
 
 
-def frame_process(cycle,config,one_hot=None):
+def frame_process(cycle, config, one_hot=None):
     # input: frame list
     # output: tensor
     # 车端数据的网格划分与one-hot编码
     if one_hot is None:  # 单独使用，临时创建一个onehotencoder
-        one_hot = OneHotEncoder(categories=(4 * config['grid_num'] * config['lane_num']) * [[-1.0, 0.0, 1.0, 2.0]], sparse_output=False)
+        one_hot = OneHotEncoder(
+            categories=(4 * config["grid_num"] * config["lane_num"]) * [[-1.0, 0.0, 1.0, 2.0]], sparse_output=False
+        )
     frame_num = len(cycle)  # 周期的帧数量
     obs_speed = cycle[:, 0]
     obs_move = cycle[:, 1]
 
     obs_move = one_hot.fit_transform(obs_move.reshape(frame_num, -1))
-    obs_move = obs_move.reshape(frame_num, 4, config['grid_num'], config['lane_num'], 4)
-    obs_speed = obs_speed.reshape(frame_num, 4, config['grid_num'], config['lane_num'], 1)
+    obs_move = obs_move.reshape(frame_num, 4, config["grid_num"], config["lane_num"], 4)
+    obs_speed = obs_speed.reshape(frame_num, 4, config["grid_num"], config["lane_num"], 1)
 
     obs_c = np.concatenate([obs_move, obs_speed], axis=-1)
-    obs_c = np.moveaxis(obs_c, -1, 1).reshape(frame_num, 20, config['grid_num'], config['lane_num'])
+    obs_c = np.moveaxis(obs_c, -1, 1).reshape(frame_num, 20, config["grid_num"], config["lane_num"])
     # 先type再inlet
     obs_c = torch.from_numpy(obs_c).to(torch.float32)
 
     return obs_c  # Tensor: (frame_num,20,GRID_NUM,LANE_NUM)
 
 
-def timeloss_process(timeloss_data,config):
+def timeloss_process(timeloss_data, config):
     # intput timeloss_data: (sample:list,cycle:list,frames:)
     # output d: tensor(sample,lookahead)
     d = []
@@ -156,16 +161,16 @@ def timeloss_process(timeloss_data,config):
             w = np.logspace(start=0, stop=cycle_length - 1, num=cycle_length, base=config["gamma"])
             timeloss_sample_new[j] = (timeloss_cycle.sum(axis=(1, 2)) * w).sum()
         # lookahead
-        for j in range(config['lookback'], cycle_num - config['lookahead'] + 1):
-            d.append(timeloss_sample_new[j : j + config['lookahead']])
+        for j in range(config["lookback"], cycle_num - config["lookahead"] + 1):
+            d.append(timeloss_sample_new[j : j + config["lookahead"]])
 
-    d = np.array(d).reshape(-1, config['lookahead'])
+    d = np.array(d).reshape(-1, config["lookahead"])
     d = torch.from_numpy(d).to(torch.float32)
 
     return d
 
 
-def tc_process(tc_data,config):
+def tc_process(tc_data, config):
     # input: (sample:list,cycle:list,control:dict)
     # output: tensor(sample,lookback+lookahead,13)
     tc_p = []  # phase
@@ -177,12 +182,12 @@ def tc_process(tc_data,config):
         cycle_num = len(sample)
         # LOOKBACK+LOOKAHEAD
         # tc: (sample_num, cycle_num, dict:phase and split, array)
-        for j in range(config['lookback'], cycle_num - config['lookahead'] + 1):
-            tc_p.append([sample[k]["phase"] for k in range(j - config['lookback'], j + config['lookahead'])])
-            tc_s.append([sample[k]["split"] for k in range(j - config['lookback'], j + config['lookahead'])])
+        for j in range(config["lookback"], cycle_num - config["lookahead"] + 1):
+            tc_p.append([sample[k]["phase"] for k in range(j - config["lookback"], j + config["lookahead"])])
+            tc_s.append([sample[k]["split"] for k in range(j - config["lookback"], j + config["lookahead"])])
 
-    tc_p = np.array(tc_p).reshape(-1, config['lookback'] + config['lookahead'], 5)
-    tc_s = np.array(tc_s).reshape(-1, config['lookback'] + config['lookahead'], 8)
+    tc_p = np.array(tc_p).reshape(-1, config["lookback"] + config["lookahead"], 5)
+    tc_s = np.array(tc_s).reshape(-1, config["lookback"] + config["lookahead"], 8)
 
     tc = np.concatenate([tc_p, tc_s], axis=-1)
     tc = torch.from_numpy(tc).to(torch.float32)
@@ -202,4 +207,4 @@ if __name__ == "__main__":
     if not os.path.isdir(output_dir):
         os.mkdir(output_dir)
 
-    agg_sim_data(data_dir, output_dir,config)
+    agg_sim_data(data_dir, output_dir, config)

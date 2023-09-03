@@ -1,0 +1,19 @@
+{
+    "python.analysis.extraPaths": [
+    ],
+    "ruff.args": [
+        "--ignore=E501,F401",
+        "--line-length=120"
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": false,
+        "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": false,
+            "source.organizeImports.ruff": false,
+        },
+        "editor.formatOnType": true,
+    },
+    "path-intellisense.showHiddenFiles": true,
+    // "jupyter.runStartupCommands": "%load_ext autoreload\n%autoreload 2"
+}
