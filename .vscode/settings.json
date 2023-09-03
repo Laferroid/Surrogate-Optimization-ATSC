@@ -16,4 +16,6 @@
     },
     "path-intellisense.showHiddenFiles": true,
     // "jupyter.runStartupCommands": "%load_ext autoreload\n%autoreload 2"
+    "remote.SSH.useLocalServer": true,
+    "GitCommitPlugin.ShowEmoji": false
 }
