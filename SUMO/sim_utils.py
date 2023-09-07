@@ -10,6 +10,7 @@ direction_map = {"L": 0, "T": 1, "R": 2}
 
 scheme2func = [[2, 2], [2, 1], [2, 0], [1, 0]]
 
+
 # 根据车辆的路径id获取信息
 def get_movement(object_id):
     # object_id为vehicle_id或route_id

@@ -20,7 +20,7 @@ if __name__ == "__main__":
     if MODE == "sample":  # 多进程会各复制一份本文件，并且完全执行，需要把其他脚本部分注释掉或进行if判断
         start_time = time.perf_counter()
 
-        with Pool(8) as pool:
+        with Pool(24) as pool:
             pool.map(
                 partial(run_sample, config=config),
                 [i for i in range(config["run_num"])],
@@ -37,21 +37,6 @@ if __name__ == "__main__":
         start_time = time.perf_counter()
 
         res = run_experiment(config)
-        # 保存demand信息
-        np.save(config["exp_name"] + "demand_data.npy", res["demand"])
-        # 保存MPC控制器的信息
-        with open(config["exp_name"] + "mpc_data.pkl", "wb") as f:
-            joblib.dump(
-                {
-                    "surrogate_result": res["mpc_controller"].surrogate_result,
-                    "control_result": res["mpc_controller"].control_result,
-                    "context_result": res["mpc_controller"].context_result,
-                    "horizon_result": res["mpc_controller"].horizon_result,
-                    "valid_result": res["mpc_controller"].valid_result,
-                    "surrogate_model": res["surrogate_model"],
-                },
-                f,
-            )
 
         end_time = time.perf_counter()
         duration = end_time - start_time  # 毫秒

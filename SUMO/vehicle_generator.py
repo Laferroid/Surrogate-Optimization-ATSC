@@ -67,8 +67,8 @@ class VehicleGenerator:
 
         if mode == "static":
             self.generate_demand = self.generate_static_demand
-        elif mode == "stepfunc":
-            self.generate_demand = self.generate_stepfunc_demand
+        elif mode == "stepwise":
+            self.generate_demand = self.generate_stepwise_demand
         elif mode == "linear":
             self.generate_demand = self.generate_linear_demand
         elif mode == "sine":
@@ -107,7 +107,7 @@ class VehicleGenerator:
         # 恒定vph
         # # 进口道基础vph
         self.v_level += 200
-        vph_level = np.array(4 * [800])
+        vph_level = np.array([800,800,800,800])
         # 进口道转向比
         turn_ratio = np.array([[0.25, 0.5, 0.25], [0.25, 0.5, 0.25], [0.25, 0.5, 0.25], [0.25, 0.5, 0.25]])
 
@@ -135,24 +135,22 @@ class VehicleGenerator:
 
     def generate_linear_demand(self):
         # 动态变化的vph: linear
-        # 进口道基础vph
+        # endpoint-a
         scale = 1.0
         if len(self.vph_m_list) > 0:
             prev_vph = self.vph_m_list[-1][-1]
             vph_level_a = prev_vph.sum(-1)
             turn_ratio_a = prev_vph / prev_vph.sum(-1)[:, None]
         elif len(self.vph_m_list) == 0:
-            vph_level_a = self.rng.uniform(200.0, 1200.0, 4)
-            vph_level_a *= scale
-            turn_ratio_a = self.rng.uniform(0.8, 1.2, (4, 3)) * np.array(4 * [[1, 2, 1]])
+            vph_level_a = scale*self.rng.uniform(200.0, 1200.0, 4)  # setting
+            turn_ratio_a = self.rng.uniform(0.8, 1.2, (4, 3)) * np.array(4 * [[1, 2, 1]])  # setting
             turn_ratio_a = turn_ratio_a / turn_ratio_a.sum(axis=-1)[:, None]
 
-        vph_level_b = self.rng.uniform(200.0, 1200.0, 4)
-        vph_level_b *= scale
+        # endpoint-b
+        vph_level_b = scale*self.rng.uniform(200.0, 1200.0, 4)   # setting
         vph_level = np.linspace(vph_level_a, vph_level_b, self.duration, axis=0)
 
-        # 进口道转向比
-        turn_ratio_b = self.rng.uniform(0.8, 1.2, (4, 3)) * np.array(4 * [[1, 2, 1]])
+        turn_ratio_b = self.rng.uniform(0.8, 1.2, (4, 3)) * np.array(4 * [[1, 2, 1]])   # setting
         turn_ratio_b = turn_ratio_b / turn_ratio_b.sum(axis=-1)[:, None]
         turn_ratio = np.linspace(turn_ratio_a, turn_ratio_b, self.duration, axis=0)
 

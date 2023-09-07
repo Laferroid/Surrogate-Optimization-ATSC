@@ -4,6 +4,7 @@ import os
 import numpy as np
 from tqdm import tqdm
 import traci
+import joblib
 
 # 导入与重载自定义模块
 from SUMO.traffic_controller import BaseTrafficController
@@ -52,7 +53,7 @@ def run_experiment(config):
         if clock.is_to_run():
             if clock.is_warm():  # 热启动
                 monitor.run()  # 开始监测
-                recorder.run(observer.output())  # 开始记录
+                recorder.run(observer.output(config['has_route']))  # 开始记录
             pbar.update(1)
             clock.run()
             veh_gen.run()  # 车辆生成器根据schedule生成车辆
@@ -66,24 +67,25 @@ def run_experiment(config):
                 clock.update()
 
                 if clock.cycle_step in snapshooter.snapshot_points:  # snapshot when cycle is terminated
-                    snapshot_dir = snapshooter.snapshot_dir + "snapshot_" + str(clock.cycle_step) + "/"
+                    snapshot_dir = snapshooter.snapshots_dir + "snapshot_" + str(clock.cycle_step) + "/"
                     if not os.path.isdir(snapshot_dir):
                         os.mkdir(snapshot_dir)
                     snapshooter.snapshot(snapshot_dir, veh_gen, monitor)
 
                 # region generate traffic control scheme for next cycle
-                method = "mpc"  # mpc or baseline
-                assert method in ["mpc", "benchmark"]
+                method = config["tsc_mode"]  # mpc or baseline
+                assert method in ["mpc", "baseline"]
                 if method == "mpc":
                     # MPC实验
                     if mpc_controller.warm_up == 0:
                         tc.update("mpc", monitor=monitor, mpc_controller=mpc_controller)
                     else:
                         tc.update("default")  # 使用默认方案
-                elif method == "benchmark":
+                elif method == "baseline":
                     # 对比方案实验
                     if clock.time >= (monitor.vph_update_freq + clock.warm_up):
-                        if mpc_controller.warm_up == 0:  # 即使不使用mpc也要记录context以绘制代理曲线(曲面)
+                        if mpc_controller.warm_up == 0:
+                            # 即使不使用mpc也要记录context以绘制代理曲线(曲面)
                             mpc_controller.record_context()
                         tc.update("adaptive-nema", monitor=monitor)
                         # tc.update('fixed-time',param=(np.array([0,0,0,0,0]),20.0))
@@ -95,7 +97,25 @@ def run_experiment(config):
 
     # 结束仿真
     traci.close()
-    recorder.save(None, config["exp_dir"] + "result/")
+    save_dir = config["exp_dir"] + "simulation_results/"
+    if not os.path.isdir(save_dir):
+        os.mkdir(save_dir)
+    recorder.save(None, save_dir)
+    # 保存demand信息
+    np.save(save_dir + "demand_data.npy", veh_gen.output())
+    # 保存MPC控制器的信息
+    with open(save_dir + "mpc_data.pkl", "wb") as f:
+        joblib.dump(
+            {
+                "surrogate_result": mpc_controller.surrogate_result,
+                "control_result": mpc_controller.control_result,
+                "context_result": mpc_controller.context_result,
+                "horizon_result": mpc_controller.horizon_result,
+                "valid_result": mpc_controller.valid_result,
+                "surrogate_model": surrogate_model,
+            },
+            f,
+        )
 
     return {"mpc_controller": mpc_controller, "surrogate_model": surrogate_model, "demand": veh_gen.output()}
 
@@ -126,7 +146,7 @@ def run_sample(index, config):
         if clock.is_to_run():
             if clock.is_warm():  # 热启动
                 monitor.run()  # 开始监测
-                recorder.run(observer)  # 开始记录
+                recorder.run(observer.output(config['has_route']))  # 开始记录
             clock.run()
             veh_gen.run()  # 随机性考虑
             tc.run()  # 随机性考虑
@@ -151,4 +171,7 @@ def run_sample(index, config):
                     monitor.reset()  # 重置性能指标监测器
     # 结束仿真
     traci.close()
-    recorder.save(index, config["data_dir"] + f'simulation_data/{config["data_name"]}')
+    save_dir = config["data_dir"]+ config['data_name']+ "/" + 'simulation_data/'
+    if not os.path.isdir(save_dir):
+        os.makedirs(save_dir)
+    recorder.save(index, save_dir)

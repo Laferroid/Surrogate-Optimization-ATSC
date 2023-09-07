@@ -17,36 +17,39 @@ from scipy.stats import norm
 from torch import nn
 
 from models.mdn_model import aleatoric_uncertainty, epistemic_uncertainty, mdn_mean, variance
-from utils.process import frame_process
+from utils.process_func import frame_process
 
 # endregion
 
 
 # %%
 class MPCController:
-    def __init__(self, model, mpc_config):
-        self.lookback = mpc_config["lookback"]
-        self.lookahead = mpc_config["lookahead"]
+    def __init__(self, model, config):
+        self.config = config
+
+        self.lookback = config["lookback"]
+        self.lookahead = config["lookahead"]
         self.warm_up = self.lookback  # 热启动周期
-        self.num_enumerations = mpc_config["num_enumerations"]  # 比较关键，需要进行敏感性分析
-        self.num_restarts = mpc_config["num_restarts"]
+        self.num_enumerations = config["num_enumerations"]  # 比较关键，需要进行敏感性分析
+        self.num_restarts = config["num_restarts"]
 
         self.g_min, self.g_max = 15.0, 60.0
         self.G_min, self.G_max = 60.0, 180.0
 
-        self.gamma = mpc_config["gamma"]
-        self.alpha = mpc_config["alpha"]
-        self.beta = mpc_config["beta"]
+        self.gamma = config["gamma"]
+        self.alpha = config["alpha"]
+        self.beta = config["beta"]
 
         self.r = 2.0
 
         # 延误预测模型
         self.model = model
+        self.model.batch_size = 1
         self.upper_context = None
 
         # 记录并更新代理模型的输入，因此神经网络输入的格式
         self.obs_back = np.empty((1, self.lookback), dtype=object)
-        self.tc_back = torch.zeros((1, self.lookback, 13))
+        self.tc_back = torch.zeros((1, self.lookback, 8+5))
 
         # 记录MPC控制器的一些内部变量
         self.surrogate_result = []  # 用于可视化，列表中元素是array的格式
@@ -74,7 +77,7 @@ class MPCController:
     # 绿灯时间基于等饱和度
     def _multi_restarts(self, vph_m, lookahead):
         # 基于等饱和度原则，多次随机启动
-        sfr = 1880  # 所有车道的饱和流率, 使用文献中推荐的值，左转修正系数0.9
+        sfr = 1880  # 所有车道的饱和流率, 仿真测量，左转修正系数0.9
         split = np.zeros(8)
         movement2number = [[7, 4], [1, 6], [3, 8], [5, 2]]  # 流向映射到编号
         for i in range(4):  # 流向的流量比
@@ -247,7 +250,7 @@ class MPCController:
         # 每次优化都重新创建tc_ahead张量，因此无需清空梯度
         tc_ahead = (
             torch.from_numpy(np.concatenate([phase, split], axis=-1)).to(torch.float32).unsqueeze(dim=0)
-        )  # (1,lookahead,13)
+        )  # (1,lookahead,8+5)
         tc_ahead.requires_grad = True
         # tc_ahead.retain_grad = True  # 是叶子节点，不用设置retain_grad
 
@@ -282,7 +285,7 @@ class MPCController:
         # 维护代理模型的状态tensor：obs_back, tc_back
         # tc: traffic controller
         # (frames:list,info) -> tenor (frames,C,H,W)
-        obs = frame_process(None, obs_data)
+        obs = frame_process(obs_data,self.config)
 
         # obs_back更新
         self.obs_back[0, :-1] = self.obs_back[0, 1:]  # tensor
@@ -306,7 +309,7 @@ class MPCController:
             phases = self._multi_enumerations(lookahead)
             splits = self._multi_restarts(vph_m, lookahead)
 
-            optimal_point, _ = self._optimize(phases, splits)  # (1,lookahead,13)
+            optimal_point, _ = self._optimize(phases, splits)  # (1,lookahead,8+5)
             optimal_surrogate = self._predict(optimal_point)  # (c,mu,sigma)
 
             with torch.no_grad():

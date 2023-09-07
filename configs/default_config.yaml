@@ -1,4 +1,4 @@
-batch_size: 32
+batch_size: 64
 lookback: 8
 lookahead: 4
 gamma: 1.000
@@ -12,37 +12,42 @@ data_dir: "../data/"
 result_dir: "../results/"
 exp_group: "test"
 job_type: "preparation"
-exp_name: "baseline"
+exp_name: "mpc"
+model_name: "baseline"
 exp_id: "0"
 # group_dir: "../results/test/"
-# exp_dir: "../results/test/baseline/"
+# exp_dir: "../results/test/first/"
 # model_dir: "../results/test/baseline/"
 
-device: 'cpu'
+device: "cpu"
 
 # about training
 seed: 0
 sample_size: [8,4]
-num_workers: 2
-split: [0.6,0.2,0.2]
+num_workers: 8
+split: [0.8,0.1,0.1]
 lr: 0.001
-epochs: 8
+epochs: 4
 train_log_freq: 10
-val_log_freq: 50
+val_log_freq: 100
 step_check_freq: 100
 
 # about simulation
 mode: 'experiment'
-run_num: 1
-cycle_to_run: 10
-time_to_run: 3600
+run_num: 128
+cycle_to_run: 128
+time_to_run: 7200
+
 step_length: 1.0
 time_interval: 1.0
 step_num: 1
 warm_up: 400
 
+has_route: False
+
 # about experiment
 snapshot_points: [24,32,48,60,72]
+tsc_mode: "mpc"
 
 # about sampling
 grid_length: 2.0

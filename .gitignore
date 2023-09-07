@@ -1,4 +1,3 @@
 __pycache__
-/data/simulation_data/*
-/data/training_data/*
+/data/*
 /results/*

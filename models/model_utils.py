@@ -242,7 +242,7 @@ class MyDataset(Dataset):
     def __init__(self, config):
         super(MyDataset, self).__init__()
         self.config = config
-        self.dir = self.config["data_dir"] + "training_data/" + self.config["data_name"] + "/"
+        self.dir = self.config["data_dir"] + self.config["data_name"] + "/training_data/"
         self.lookback = self.config["lookback"]  # 从数据中选取的时窗大小
         self.lookahead = self.config["lookahead"]  # 从数据中选取的时窗大小
         self.sample_size = self.config["sample_size"]

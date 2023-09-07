@@ -15,9 +15,6 @@ from traci import junction
 from traci import constants
 
 # 导入与重载自定义模块
-from SUMO.traffic_controller import BaseTrafficController
-from SUMO.vehicle_generator import VehicleGenerator
-from SUMO.mpc_controller import MPCController
 from SUMO.sim_utils import get_movement, inlet_map
 
 # endregion
@@ -127,7 +124,7 @@ class Observer:
             self.id, constants.CMD_GET_VEHICLE_VARIABLE, self.obs_range, [constants.VAR_SPEED, constants.VAR_ROUTE_ID]
         )
 
-    def output(self, mode="full"):
+    def output(self, has_route=False):
         # 获取并输出当前路况观测
         grid_num = int(self.obs_range // self.grid_length) + 3
         obs = np.zeros((1 + 1, self.approach_num, grid_num, self.lane_num), dtype=np.float32)
@@ -159,13 +156,11 @@ class Observer:
 
             grid_index = int(lon_pos // self.grid_length)
 
-            if mode == "full":
-                obs[:, inlet_index, grid_index, lane_index] = [
-                    vehicle.getSpeed(vehicle_id),
-                    get_movement(vehicle_id)[1],
-                ]
-            elif mode == "partial":
-                obs[0, inlet_index, grid_index, lane_index] = vehicle.getSpeed(vehicle_id)
+            obs[0, inlet_index, grid_index, lane_index] = vehicle.getSpeed(vehicle_id)
+            if has_route:
+                obs[1, inlet_index, grid_index, lane_index] = get_movement(vehicle_id)[1]
+            else:
+                obs[1, inlet_index, grid_index, lane_index] = 0
         return obs
 
 
@@ -215,7 +210,7 @@ class Recorder:
             with open(save_dir + "simulation_data.pkl", "wb") as f:
                 joblib.dump(data, f)
             with open(save_dir + "timestamp_data.pkl", "wb") as f:
-                joblib.dump(self.time_point, f)
+                joblib.dump(self.time_point_list, f)
         elif self.mode == "sample":
             data = {
                 "obs": self.obs_list,
