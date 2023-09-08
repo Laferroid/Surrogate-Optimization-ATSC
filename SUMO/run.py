@@ -12,8 +12,9 @@ from SUMO.runner import run_experiment, run_sample
 # %% 多进程仿真，获取数据
 if __name__ == "__main__":
     default_config_dir = "../configs/default_config.yaml"
+    updated_config_dir = "../configs/updated_config.yaml"
 
-    config = parse_config(default_config_dir)
+    config = parse_config(default_config_dir,updated_config_dir)
 
     MODE = config['mode']
 

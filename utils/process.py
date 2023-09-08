@@ -11,8 +11,9 @@ from utils.process_func import agg_sim_data
 # %%
 if __name__ == "__main__":
     default_config_dir = "../configs/default_config.yaml"
+    updated_config_dir = "../configs/updated_config.yaml"
 
-    config = parse_config(default_config_dir)
+    config = parse_config(default_config_dir,updated_config_dir)
 
     data_dir = config["data_dir"] + config["data_name"] + "/simulation_data/"
     output_dir = config["data_dir"] + config["data_name"] + "/training_data/"

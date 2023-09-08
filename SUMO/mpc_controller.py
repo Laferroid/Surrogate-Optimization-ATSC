@@ -52,7 +52,7 @@ class MPCController:
 
         # 记录并更新代理模型的输入，因此神经网络输入的格式
         self.obs_back = np.empty((1, self.lookback), dtype=object)
-        self.tc_back = torch.zeros((1, self.lookback, 8+5))
+        self.tc_back = torch.zeros((1, self.lookback, 8 + 5))
 
         # 记录MPC控制器的一些内部变量
         self.surrogate_result = []  # 代理结果，用于可视化，列表中元素是array的格式
@@ -126,7 +126,7 @@ class MPCController:
         return splits  # array(num_restarts,lookahead,8)
 
     # 优化问题求解
-    '''
+    """
     def _optimize_d(self, phases, splits):
         # phases: array(num_enumerations,lookahead,5)
         # splits: array(num_restarts,lookahead,8)
@@ -184,7 +184,7 @@ class MPCController:
                     )
 
         return optimal_point, optimal_value
-    '''
+    """
 
     def _optimize(self, phases, splits):
         # phases: array(num_enumerations,lookahead,5)
@@ -197,7 +197,7 @@ class MPCController:
             split = splits[j]  # split: array(lookahead,8)
             split = split.reshape(-1)  # split: array(lookahead*8)
 
-            bounds = Bounds(8*lookahead*[self.g_min],8*lookahead*[self.g_max])  # 变量范围
+            bounds = Bounds(8 * lookahead * [self.g_min], 8 * lookahead * [self.g_max])  # 变量范围
             A1 = block_diag(*(lookahead * [np.array([1, 1, 1, 1, 0, 0, 0, 0])]))
             A2 = block_diag(*(lookahead * [np.array([1, 1, 0, 0, -1, -1, 0, 0])]))  # 分隔约束
             A3 = block_diag(*(lookahead * [np.array([0, 0, 1, 1, 0, 0, -1, -1])]))  # 分隔约束
@@ -217,25 +217,26 @@ class MPCController:
             )
 
             optimal_value = res.fun
+
+            # 输出<代理格式>
             split = res.x
-
             split = split.reshape(lookahead, 8)
-
-            # 输出<代理格式>， (1,lookahead,5+8)
             optimal_point = torch.from_numpy(np.concatenate([phase, split], axis=-1)).unsqueeze(0).to(torch.float32)
 
+            # (1,lookahead,5+8)
             return optimal_point, optimal_value
 
-        for i in range(len(phases)):
+        for i in range(len(phases)):  # 遍历所有相位方案
             phase = phases[i]  # phase: array(lookahead,5)
             objective_func = partial(self._objective_func, phase=phase)
 
             results = []
+            # 并行遍历所有绿灯时间初始解
             results = Parallel(n_jobs=8)(delayed(par_func)(j) for j in range(len(splits)))
 
             point, value = min(results, key=lambda x: x[1])
             if value < optimal_value:
-                optimal_point, optimal_value = point,value
+                optimal_point, optimal_value = point, value
 
         return optimal_point, optimal_value
 
@@ -285,7 +286,7 @@ class MPCController:
         # 维护代理模型的状态tensor：obs_back, tc_back
         # tc: traffic controller
         # (frames:list,info) -> tenor (frames,C,H,W)
-        obs = frame_process(obs_data,self.config)
+        obs = frame_process(obs_data, self.config)
 
         # obs_back更新
         self.obs_back[0, :-1] = self.obs_back[0, 1:]  # tensor
@@ -319,14 +320,14 @@ class MPCController:
                 self.horizon_result.append(lookahead)
                 break
 
-        self.surrogate_result.append(x[0] for x in optimal_surrogate)
+        self.surrogate_result.append([x[0] for x in optimal_surrogate])
         self.control_result.append(optimal_point[0])  # remove batch dim
         self.record_context()
 
         control = {}
         # 取第一个周期
-        control["phase"] = optimal_point[0, :5].detach().numpy()  # array(5)
-        control["split"] = optimal_point[0, 5:].detach().numpy()  # array(8)
+        control["phase"] = optimal_point[0, 0, :5].detach().numpy()  # array(5)
+        control["split"] = optimal_point[0, 0, 5:].detach().numpy()  # array(8)
 
         eu = epistemic_uncertainty(optimal_surrogate).sum()
         is_valid = (np.sqrt(eu) / mean < self.beta).item()

@@ -4,8 +4,9 @@ import joblib
 from utils.helper_func import parse_config
 
 default_config_dir = "../configs/default_config.yaml"
+updated_config_dir = "../configs/updated_config.yaml"
 
-config = parse_config(default_config_dir)
+config = parse_config(default_config_dir,updated_config_dir)
 
 with open(config['data_dir']+config['data_name']+'/simulation_data/'+'simulation_data_4.pkl',"rb") as f:
     data = joblib.load(f)

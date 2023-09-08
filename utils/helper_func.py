@@ -27,13 +27,14 @@ def params_count(model):
 
 
 # configuration优先级: cmd>hard code>default
-def parse_config(default_config_dir, updated_config={}):
+def parse_config(default_config_dir, updated_config_dir):
     # 1. load default configs
     with open(default_config_dir, "r+") as f:
         config = yaml.safe_load(f)
 
     # 2. update hardcode configs
-    config.update(updated_config)
+    with open(updated_config_dir, "r+") as f:
+        config.update(yaml.safe_load(f))
 
     # 3. cmd arguments
     parser = argparse.ArgumentParser("parse cmd arguments")

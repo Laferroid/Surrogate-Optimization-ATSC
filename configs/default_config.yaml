@@ -12,7 +12,7 @@ data_dir: "../data/"
 result_dir: "../results/"
 exp_group: "test"
 job_type: "preparation"
-exp_name: "mpc"
+exp_name: "first"
 model_name: "baseline"
 exp_id: "0"
 # group_dir: "../results/test/"
@@ -48,7 +48,7 @@ red: 2.0
 timeloss: 3.0
 
 g_range: [15.0,60.0]
-C_range: [60.0,180.0]
+G_range: [60.0,180.0]
 
 has_route: False
 

@@ -18,15 +18,13 @@ from models.model_utils import train, MyDataset, get_dataloader
 # %% 训练模型
 # Windows上多进程的实现问题。在Windows上，子进程会自动import启动它的文件，而在import的时候会执行这些语句，就会无限递归创建子进程报错。
 if __name__ == "__main__":
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    print(device)
     default_config_dir = "../configs/default_config.yaml"
+    updated_config_dir = "../configs/updated_config.yaml"
 
-    updated_config = {}
-    updated_config["device"] = device
-    updated_config['exp_group'] = 'test'
-    updated_config['exp_name'] = 'baseline'
-    config = parse_config(default_config_dir, updated_config)
+    config = parse_config(default_config_dir, updated_config_dir)
+
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    config['device'] = device
 
     dataset = MyDataset(config)
     print(len(dataset))
