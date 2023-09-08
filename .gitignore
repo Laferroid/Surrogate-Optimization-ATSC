@@ -2,3 +2,4 @@ __pycache__
 /data/*
 /results/*
 SUMO/null
+configs/updated_config.yaml
