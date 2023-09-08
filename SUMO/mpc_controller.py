@@ -29,22 +29,25 @@ class MPCController:
 
         self.lookback = config["lookback"]
         self.lookahead = config["lookahead"]
-        self.warm_up = self.lookback  # 热启动周期
-        self.num_enumerations = config["num_enumerations"]  # 比较关键，需要进行敏感性分析
+        self.warm_up = self.lookback  # 过去时间窗作为热启动周期
+        self.num_enumerations = config["num_enumerations"]  # 比较关键，可能需要进行敏感性分析
         self.num_restarts = config["num_restarts"]
 
-        self.g_min, self.g_max = 15.0, 60.0
-        self.G_min, self.G_max = 60.0, 180.0
+        self.g_min, self.g_max = config["g_range"]
+        self.G_min, self.G_max = config["C_range"]
 
         self.gamma = config["gamma"]
         self.alpha = config["alpha"]
         self.beta = config["beta"]
 
-        self.r = 2.0
+        self.y = config["yellow"]
+        self.r = config["red"]
+        self.tl = config["timeloss"]
 
         # 延误预测模型
         self.model = model
-        self.model.batch_size = 1
+        self.model.batch_size = 1  # 在线代理时，模型的输入不成batch
+
         self.upper_context = None
 
         # 记录并更新代理模型的输入，因此神经网络输入的格式
@@ -52,11 +55,11 @@ class MPCController:
         self.tc_back = torch.zeros((1, self.lookback, 8+5))
 
         # 记录MPC控制器的一些内部变量
-        self.surrogate_result = []  # 用于可视化，列表中元素是array的格式
-        self.control_result = []  # 用于计算不确定性输出，是神经网络输入的格式
-        self.horizon_result = []  # 每次最优控制的时窗, list of int
-        self.valid_result = []  # 每次最优控制是否有效, list of boolean
-        self.context_result = []
+        self.surrogate_result = []  # 代理结果，用于可视化，列表中元素是array的格式
+        self.control_result = []  # 控制结果，用于计算不确定性输出，是神经网络输入的格式
+        self.horizon_result = []  # 动态预测时间窗，每次最优控制的时窗, list of int
+        self.valid_result = []  # 最优控制是否有效, list of boolean
+        self.context_result = []  # 记录过程中的upper context用于分析代理模型
 
         self.phase_list = []
         for i in range(2**5):
@@ -123,6 +126,7 @@ class MPCController:
         return splits  # array(num_restarts,lookahead,8)
 
     # 优化问题求解
+    '''
     def _optimize_d(self, phases, splits):
         # phases: array(num_enumerations,lookahead,5)
         # splits: array(num_restarts,lookahead,8)
@@ -180,6 +184,7 @@ class MPCController:
                     )
 
         return optimal_point, optimal_value
+    '''
 
     def _optimize(self, phases, splits):
         # phases: array(num_enumerations,lookahead,5)
@@ -192,7 +197,7 @@ class MPCController:
             split = splits[j]  # split: array(lookahead,8)
             split = split.reshape(-1)  # split: array(lookahead*8)
 
-            bounds = Bounds(15.0, 60.0)
+            bounds = Bounds([self.g_min,self.g_max])
             A1 = block_diag(*(lookahead * [np.array([1, 1, 1, 1, 0, 0, 0, 0])]))
             A2 = block_diag(*(lookahead * [np.array([1, 1, 0, 0, -1, -1, 0, 0])]))
             A3 = block_diag(*(lookahead * [np.array([0, 0, 1, 1, 0, 0, -1, -1])]))
@@ -225,8 +230,8 @@ class MPCController:
             phase = phases[i]  # phase: array(lookahead,5)
             objective_func = partial(self._objective_func, phase=phase)
 
+            results = []
             results = Parallel(n_jobs=8)(delayed(par_func)(j) for j in range(len(splits)))
-            # results = []
             # for j in range(len(splits)):
             #     results.append(par_func(j))
 
@@ -252,17 +257,16 @@ class MPCController:
             torch.from_numpy(np.concatenate([phase, split], axis=-1)).to(torch.float32).unsqueeze(dim=0)
         )  # (1,lookahead,8+5)
         tc_ahead.requires_grad = True
-        # tc_ahead.retain_grad = True  # 是叶子节点，不用设置retain_grad
 
         output = mdn_mean(self.model.predict(self.upper_context, tc_ahead))[0]  # (lookahead)
 
         f = output[0] + (self.gamma ** cycle_length[:-1].cumsum(0) * output[1:]).sum()
         # f /= tc_ahead[0,:,5:].sum()*0.5
-        f += output[-1] * (self.gamma ** (cycle_length.sum())) / (1 - self.gamma ** cycle_length[-1])
+        # f += output[-1] * (self.gamma ** (cycle_length.sum())) / (1 - self.gamma ** cycle_length[-1])
 
         value = f.item()
-        # f.backward()
 
+        # f.backward()
         # derivative = tc_ahead.grad[:,:,5:].detach().numpy().reshape(-1)  # array(lookahead*8)
 
         self.model.optimizer.zero_grad()  # 清空模型权重的梯度
@@ -271,13 +275,13 @@ class MPCController:
 
     def split_refined(self, split):
         # split: array(lookahead,8)
-        # 控制格式的绿灯时间
+        # 由绿灯时间的优化格式转换成控制格式
         lookahead = len(split)
         split_output = split.copy()
         for i in range(lookahead):
             split_temp = np.array([int(g) for g in split_output[i]])
-            split_temp[5] = split_temp[0] + split_temp[1] - split_temp[4]
-            split_temp[7] = split_temp[2] + split_temp[3] - split_temp[6]
+            split_temp[5] = split_temp[0:2].sum(0) - split_temp[4]
+            split_temp[7] = split_temp[2:4].sum(0) - split_temp[6]
             split_output[i, :] = split_temp
         return split_output  # array(lookahead,8)
 
@@ -305,29 +309,28 @@ class MPCController:
 
     def generate_control(self, vph_m):
         for lookahead in range(self.lookahead, 0, -1):
-            lookahead = 1
+            lookahead = 1  # bypass
             phases = self._multi_enumerations(lookahead)
             splits = self._multi_restarts(vph_m, lookahead)
 
             optimal_point, _ = self._optimize(phases, splits)  # (1,lookahead,8+5)
-            optimal_surrogate = self._predict(optimal_point)  # (c,mu,sigma)
 
             with torch.no_grad():
+                optimal_surrogate = self._predict(optimal_point)  # (c,mu,sigma)
                 mean = mdn_mean(optimal_surrogate).sum()  # (1,lookahead,1)
             au = aleatoric_uncertainty(optimal_surrogate).sum()  # (1,lookahead,1)
-            if norm(loc=mean, scale=np.sqrt(au)).cdf((1 + self.alpha) * mean) > 0.95 or True:
+            if norm(loc=mean, scale=np.sqrt(au)).cdf((1 + self.alpha) * mean) > 0.95 or True:  # bypass
                 self.horizon_result.append(lookahead)
                 break
 
-        c, mu, sigma = optimal_surrogate
-        optimal_surrogate = c[0], mu[0], sigma[0]
+        optimal_surrogate = (x[0] for x in optimal_surrogate)
         optimal_point = optimal_point[0]  # remove batch dim
         self.surrogate_result.append(optimal_surrogate)
         self.control_result.append(optimal_point)
         self.record_context()
 
         control = {}
-        # 第一个周期
+        # 取第一个周期
         control["phase"] = optimal_point[0, :5].detach().numpy()  # array(5)
         control["split"] = optimal_point[0, 5:].detach().numpy()  # array(8)
 
@@ -335,7 +338,7 @@ class MPCController:
         is_valid = (np.sqrt(eu) / mean < self.beta).item()
         self.valid_result.append(is_valid)
         # print(lookahead, is_valid)
-        is_valid = True
+        is_valid = True  # bypass
 
         return control, is_valid
 
@@ -344,6 +347,5 @@ class MPCController:
 
     def _predict(self, tc_ahead):
         self.model.eval()
-        with torch.no_grad():
-            y_pred = self.model.predict(self.upper_context, tc_ahead)
+        y_pred = self.model.predict(self.upper_context, tc_ahead)
         return y_pred

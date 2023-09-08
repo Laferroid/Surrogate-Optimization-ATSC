@@ -226,6 +226,7 @@ class Recorder:
 
 class Clock:
     def __init__(self, config):
+        # 仿真时钟，以秒为单位
         self.step_num = config["step_num"]
         self.warm_up = config["warm_up"]
         self.cycle_to_run = config["cycle_to_run"]

@@ -1,7 +1,7 @@
 batch_size: 64
 lookback: 8
 lookahead: 4
-gamma: 1.000
+gamma: 1.00
 num_components: 16
 num_channels: 16
 hidden_size: 8
@@ -42,6 +42,13 @@ step_length: 1.0
 time_interval: 1.0
 step_num: 1
 warm_up: 400
+
+yellow: 3.0
+red: 2.0
+timeloss: 3.0
+
+g_range: [15.0,60.0]
+C_range: [60.0,180.0]
 
 has_route: False
 

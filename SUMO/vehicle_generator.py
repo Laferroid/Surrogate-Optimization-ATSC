@@ -216,4 +216,4 @@ class VehicleGenerator:
                 self.schedule[r].append(n_veh)
 
     def output(self):
-        return np.concatenate(self.vph_m_list, axis=0)[640:]  # (time,inlet,turn), 取warm up后的数据
+        return np.concatenate(self.vph_m_list, axis=0)[:]  # (time,inlet,turn), 取warm up后的数据

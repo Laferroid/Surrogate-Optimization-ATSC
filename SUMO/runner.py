@@ -44,7 +44,7 @@ def run_experiment(config):
 
     # 热启动完毕且当前周期结束时正式开始记录数据
     # 按周期数进行仿真
-    while not clock.is_end("experiment"):
+    while True:
         # 仿真步进
         traci.simulationStep()
         clock.step()
@@ -72,20 +72,22 @@ def run_experiment(config):
                         os.mkdir(snapshot_dir)
                     snapshooter.snapshot(snapshot_dir, veh_gen, monitor)
 
+                if clock.is_end("experiment"):  # 在周期最后一个周期结束并完成处理后终止实验仿真
+                    break
+
                 # region generate traffic control scheme for next cycle
-                method = config["tsc_mode"]  # mpc or baseline
-                assert method in ["mpc", "baseline"]
-                if method == "mpc":
+                assert config["tsc_mode"] in ["mpc", "webster"]
+                if config["tsc_mode"] == "mpc":
                     # MPC实验
                     if mpc_controller.warm_up == 0:
                         tc.update("mpc", monitor=monitor, mpc_controller=mpc_controller)
                     else:
                         tc.update("default")  # 使用默认方案
-                elif method == "baseline":
+                elif config["tsc_mode"] == "webster":
                     # 对比方案实验
                     if clock.time >= (monitor.vph_update_freq + clock.warm_up):
                         if mpc_controller.warm_up == 0:
-                            # 即使不使用mpc也要记录context以绘制代理曲线(曲面)
+                            # 即使不使用mpc也要记录context用于绘制代理曲线(曲面)
                             mpc_controller.record_context()
                         tc.update("adaptive-nema", monitor=monitor)
                         # tc.update('fixed-time',param=(np.array([0,0,0,0,0]),20.0))
@@ -116,9 +118,6 @@ def run_experiment(config):
             },
             f,
         )
-
-    return {"mpc_controller": mpc_controller, "surrogate_model": surrogate_model, "demand": veh_gen.output()}
-
 
 def run_sample(index, config):
     np.random.seed()  # 多进程跑数据，随机设置种子

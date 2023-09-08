@@ -36,7 +36,7 @@ if __name__ == "__main__":
     elif MODE == "experiment":
         start_time = time.perf_counter()
 
-        res = run_experiment(config)
+        run_experiment(config)
 
         end_time = time.perf_counter()
         duration = end_time - start_time  # 毫秒
