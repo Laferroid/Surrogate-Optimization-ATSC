@@ -319,10 +319,8 @@ class MPCController:
                 self.horizon_result.append(lookahead)
                 break
 
-        optimal_surrogate = (x[0] for x in optimal_surrogate)
-        optimal_point = optimal_point[0]  # remove batch dim
-        self.surrogate_result.append(optimal_surrogate)
-        self.control_result.append(optimal_point)
+        self.surrogate_result.append(x[0] for x in optimal_surrogate)
+        self.control_result.append(optimal_point[0])  # remove batch dim
         self.record_context()
 
         control = {}
