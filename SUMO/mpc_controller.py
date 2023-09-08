@@ -34,7 +34,7 @@ class MPCController:
         self.num_restarts = config["num_restarts"]
 
         self.g_min, self.g_max = config["g_range"]
-        self.G_min, self.G_max = config["C_range"]
+        self.G_min, self.G_max = config["G_range"]
 
         self.gamma = config["gamma"]
         self.alpha = config["alpha"]
@@ -103,12 +103,12 @@ class MPCController:
             split[[2, 3]] *= y4 / y2
 
         Y = max(y1, y3) + max(y2, y4)
-        L = 4.0 * (self.r + 3.0)
+        L = 4.0 * (self.r + self.tl)
 
         if Y > 0.9:
             Y = 0.9
         C = (1.5 * L + 5.0) / (1 - Y)
-        G = C - 4.0 * (3.0 + self.r)
+        G = C - L
 
         split = split / (0.5 * split.sum())
         lb = max(self.g_min / split.min(), self.G_min)
@@ -178,7 +178,7 @@ class MPCController:
                     # split = x  # (lookahead,8)
                     split = split.reshape(lookahead, 8)
 
-                    # 输出<代理格式>， (1,lookahead,5+8)
+                    # 输出<代理格式>, (1,lookahead,5+8)
                     optimal_point = (
                         torch.from_numpy(np.concatenate([phase, split], axis=-1)).unsqueeze(0).to(torch.float32)
                     )
@@ -197,10 +197,10 @@ class MPCController:
             split = splits[j]  # split: array(lookahead,8)
             split = split.reshape(-1)  # split: array(lookahead*8)
 
-            bounds = Bounds([self.g_min,self.g_max])
+            bounds = Bounds(8*lookahead*[self.g_min],8*lookahead*[self.g_max])  # 变量范围
             A1 = block_diag(*(lookahead * [np.array([1, 1, 1, 1, 0, 0, 0, 0])]))
-            A2 = block_diag(*(lookahead * [np.array([1, 1, 0, 0, -1, -1, 0, 0])]))
-            A3 = block_diag(*(lookahead * [np.array([0, 0, 1, 1, 0, 0, -1, -1])]))
+            A2 = block_diag(*(lookahead * [np.array([1, 1, 0, 0, -1, -1, 0, 0])]))  # 分隔约束
+            A3 = block_diag(*(lookahead * [np.array([0, 0, 1, 1, 0, 0, -1, -1])]))  # 分隔约束
             lb1, ub1 = self.G_min * np.ones(lookahead), self.G_max * np.ones(lookahead)
             lb2, ub2 = np.zeros(2 * lookahead), np.zeros(2 * lookahead)
             linear_constraint = LinearConstraint(
@@ -232,13 +232,10 @@ class MPCController:
 
             results = []
             results = Parallel(n_jobs=8)(delayed(par_func)(j) for j in range(len(splits)))
-            # for j in range(len(splits)):
-            #     results.append(par_func(j))
 
             point, value = min(results, key=lambda x: x[1])
             if value < optimal_value:
-                optimal_point = point
-                optimal_value = value
+                optimal_point, optimal_value = point,value
 
         return optimal_point, optimal_value
 
@@ -276,9 +273,8 @@ class MPCController:
     def split_refined(self, split):
         # split: array(lookahead,8)
         # 由绿灯时间的优化格式转换成控制格式
-        lookahead = len(split)
         split_output = split.copy()
-        for i in range(lookahead):
+        for i in range(len(split)):  # 循环遍历lookahead
             split_temp = np.array([int(g) for g in split_output[i]])
             split_temp[5] = split_temp[0:2].sum(0) - split_temp[4]
             split_temp[7] = split_temp[2:4].sum(0) - split_temp[6]
